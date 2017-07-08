@@ -5,7 +5,6 @@ import {List, InputItem, Checkbox, WhiteSpace, Button, Toast} from 'antd-mobile'
 import {createForm} from 'rc-form';
 
 import http from '../util/http';
-import './Style.css';
 
 class Apply extends Component {
     constructor(props) {
@@ -138,7 +137,7 @@ class Apply extends Component {
                         }.bind(this),
                         complete: function () {
 
-                        }.bind(this)
+                        }
                     });
                 }.bind(this));
 

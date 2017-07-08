@@ -2,7 +2,6 @@ import reqwest from 'reqwest';
 import {Toast} from 'antd-mobile';
 
 import constant from './constant';
-import storage from './storage';
 
 function request(config) {
     reqwest({

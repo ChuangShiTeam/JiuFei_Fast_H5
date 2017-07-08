@@ -4,8 +4,6 @@ import {routerRedux} from 'dva/router';
 import { createForm } from 'rc-form';
 import { Result, Icon, WhiteSpace, Button } from 'antd-mobile';
 
-import './Style.css';
-
 class Sucess extends Component {
     constructor(props) {
         super(props);

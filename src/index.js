@@ -1,6 +1,8 @@
 import dva from 'dva';
 import Router from './router';
 
+import './view/Style.css';
+
 import customer from './model/customer';
 
 const app = dva();

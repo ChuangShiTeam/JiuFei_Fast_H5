@@ -4,8 +4,6 @@ import {routerRedux} from 'dva/router';
 import {List, InputItem, DatePicker, Checkbox, WhiteSpace, Button, Toast} from 'antd-mobile';
 import {createForm} from 'rc-form';
 
-import './Style.css';
-
 class Home extends Component {
     constructor(props) {
         super(props);
