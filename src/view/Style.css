@@ -1,0 +1,19 @@
+body, html {
+    font-family: PingFang SC,Helvetica Neue,Hiragino Sans GB,Helvetica,Microsoft YaHei,Arial;
+}
+
+.am-checkbox-item .am-list-line:after {
+    border-bottom: 0px solid #ddd !important;
+}
+
+.am-checkbox-item .am-list-thumb:first-child {
+    margin-right: 0.15rem !important;
+}
+
+.text {
+    white-space: pre-wrap !important;
+}
+
+.am-checkbox-agree .am-checkbox-inner {
+    top: 0.19rem !important;
+}
