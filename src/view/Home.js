@@ -9,7 +9,7 @@ class Home extends Component {
         super(props);
 
         this.state = {
-
+            is_view: true
         }
     }
 
@@ -99,12 +99,25 @@ class Home extends Component {
         });
     }
 
+    close() {
+        this.setState({
+            is_view: false
+        })
+    }
+
     render() {
         const { getFieldProps, getFieldError } = this.props.form;
         const AgreeItem = Checkbox.AgreeItem;
 
         return (
             <div>
+                {
+                    this.state.is_view? <div className="mask">
+                        <img className="close" src={require('../image/04.png')} alt="关闭" onClick={this.close.bind(this)}/>
+                        <img className="code-img" style={{width: '80%'}} src={require('../image/03.jpg')} alt='微店二维码' />
+                    </div>:null
+                }
+
                 <img style={{width: '100%'}} src={require('../image/00.jpg')} alt=""/>
                 <List style={{marginTop: '0px'}}>
                     <InputItem
