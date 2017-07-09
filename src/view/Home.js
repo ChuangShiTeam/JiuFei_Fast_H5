@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import {routerRedux} from 'dva/router';
-import {List, InputItem, DatePicker, Checkbox, WhiteSpace, Button, Toast} from 'antd-mobile';
+import {Popup, List, InputItem, DatePicker, Checkbox, WhiteSpace, Button, Toast} from 'antd-mobile';
 import {createForm} from 'rc-form';
 
 class Home extends Component {
@@ -9,22 +9,29 @@ class Home extends Component {
         super(props);
 
         this.state = {
-            is_view: true
-        }
+
+        };
     }
 
+
     componentDidMount() {
+
         this.props.form.setFieldsValue({
             customer_name: this.props.customer.customer_name,
             customer_phone: this.props.customer.customer_phone,
             customer_birthday: this.props.customer.customer_birthday,
             customer_city: this.props.customer.customer_city
         });
+        Popup.show(<div className="code-info"><img className="close" onClick={this.close.bind(this)} src={require('../image/04.png')} alt=''/> <img className="code-img" style={{width: '80%'}} src={require('../image/03.jpg')} alt='微店二维码' /></div>, {maskClosable:false, className: 'back'});
     }
 
+    close(){
+        Popup.hide();
+    }
     componentWillUnmount() {
 
     }
+
 
     checkPhone(phone) {
         if (!(/^1(3|4|5|7|8)\d{9}$/.test(phone))) {
@@ -80,7 +87,6 @@ class Home extends Component {
                     pathname: '/apply',
                     query: {},
                 }));
-
                 return
             }
         });
@@ -99,11 +105,6 @@ class Home extends Component {
         });
     }
 
-    close() {
-        this.setState({
-            is_view: false
-        })
-    }
 
     render() {
         const { getFieldProps, getFieldError } = this.props.form;
@@ -111,12 +112,6 @@ class Home extends Component {
 
         return (
             <div>
-                {
-                    this.state.is_view? <div className="mask">
-                        <img className="close" src={require('../image/04.png')} alt="关闭" onClick={this.close.bind(this)}/>
-                        <img className="code-img" style={{width: '80%'}} src={require('../image/03.jpg')} alt='微店二维码' />
-                    </div>:null
-                }
 
                 <img style={{width: '100%'}} src={require('../image/00.jpg')} alt=""/>
                 <List style={{marginTop: '0px'}}>

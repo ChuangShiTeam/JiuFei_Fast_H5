@@ -17,3 +17,32 @@ body, html {
 .am-checkbox-agree .am-checkbox-inner {
     top: 0.19rem !important;
 }
+
+.mask{
+    background: rgba(0, 0, 0, 0.80);
+    position:absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 99;
+}
+
+.code-info{
+    background:none;
+}
+
+.close{
+    position: absolute;
+    width: 10%;
+    top:50%;
+    left:50%;
+    margin-top: 31%;
+    margin-left: 31%;
+}
+
+.code-img{
+    position: absolute;
+    top:50%;
+    left:50%;
+    margin-top: 41%;
+    margin-left: -40%;
+}
