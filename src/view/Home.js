@@ -22,12 +22,10 @@ class Home extends Component {
             customer_birthday: this.props.customer.customer_birthday,
             customer_city: this.props.customer.customer_city
         });
-        Popup.show(<div className="code-info"><img className="close" onClick={this.close.bind(this)} src={require('../image/04.png')} alt=''/> <img className="code-img" style={{width: '80%'}} src={require('../image/03.jpg')} alt='微店二维码' /></div>, {maskClosable:false, className: 'back'});
+        // Popup.show(<div className="code-info"><img className="close" onClick={this.handleClose.bind(this)} src={require('../image/04.png')} alt=''/> <img className="code-img" style={{width: '80%'}} src={require('../image/03.jpg')} alt='微店二维码' /></div>, {maskClosable:false, className: 'back'});
+        Popup.show(<div className="code-info"><img className="code-img" style={{width: '80%'}} src={require('../image/03.jpg')} alt='微店二维码' /></div>, {maskClosable:true, className: 'back'});
     }
 
-    close(){
-        Popup.hide();
-    }
     componentWillUnmount() {
 
     }
@@ -38,6 +36,10 @@ class Home extends Component {
             return false;
         }
         return true;
+    }
+
+    handleClose(){
+        Popup.hide();
     }
 
     handleNext() {
