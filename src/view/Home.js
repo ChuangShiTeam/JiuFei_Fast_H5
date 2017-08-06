@@ -19,6 +19,7 @@ class Home extends Component {
         this.props.form.setFieldsValue({
             customer_name: this.props.customer.customer_name,
             customer_phone: this.props.customer.customer_phone,
+            customer_validate: this.props.customer.customer_validate,
             customer_birthday: this.props.customer.customer_birthday,
             customer_city: this.props.customer.customer_city
         });
@@ -57,6 +58,11 @@ class Home extends Component {
                     Toast.fail('手机号码格式不对', 1)
                     return;
                 }
+            }
+
+            if (values.customer_validate === '') {
+                Toast.fail('请选择您的手机验证码', 1)
+                return;
             }
 
             if (values.customer_birthday === '') {
@@ -141,6 +147,19 @@ class Home extends Component {
                         clear
                         placeholder="请输入手机号码"
                     >您的手机</InputItem>
+                    <InputItem
+                        {...getFieldProps('customer_validate', {
+                            rules: [{
+                                required: true,
+                                message: '不能为空',
+                            }],
+                            initialValue: '',
+                        })}
+                        error={!!getFieldError('customer_validate')}
+                        clear
+                        placeholder="手机验证码"
+                    >验证码<Button type="primary" style={{ position: 'absolute',top:'0.12rem',right:'6px' }} size="small">获取验证码</Button></InputItem>
+
                     <DatePicker
                         mode="date"
                         extra="请选择日期"

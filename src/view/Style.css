@@ -29,7 +29,6 @@ body, html {
 .code-info{
     background:none;
 }
-
 .close{
     position: absolute;
     width: 10%;
@@ -38,11 +37,19 @@ body, html {
     margin-top: 31%;
     margin-left: 31%;
 }
-
 .code-img{
     position: absolute;
     top:50%;
     left:50%;
     margin-top: 41%;
     margin-left: -40%;
+}
+
+.sc-example {
+    padding-bottom: 0.26rem;
+}
+.sub-title {
+    color: #888;
+    font-size: .28rem;
+    padding: 30px 0 18px 0;
 }
