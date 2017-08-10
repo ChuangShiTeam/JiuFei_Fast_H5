@@ -3,6 +3,7 @@ import {connect} from 'dva';
 import {routerRedux} from 'dva/router';
 import {Popup, List, InputItem, DatePicker, Checkbox, WhiteSpace, Button, Toast} from 'antd-mobile';
 import {createForm} from 'rc-form';
+import moment from 'moment';
 
 class Home extends Component {
     constructor(props) {
@@ -144,6 +145,9 @@ class Home extends Component {
                     <DatePicker
                         mode="date"
                         extra="请选择日期"
+                        minDate={moment('1917-01-01', 'YYYY-MM-DD')}
+                        maxDate={moment()}
+                        defaultDate={moment()}
                         {...getFieldProps('customer_birthday', {
                             rules: [{
                                 required: true,
