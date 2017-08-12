@@ -5,12 +5,14 @@ import FastClick from 'fastclick';
 import './view/Style.css';
 
 import customer from './model/customer';
+import credit_card from './model/credit_card';
 
 FastClick.attach(document.body);
 
 const app = dva();
 
 app.model(customer);
+app.model(credit_card);
 
 app.router(Router);
 
