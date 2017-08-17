@@ -1,8 +1,8 @@
 export default {
-	namespace: 'credit_card',
+	namespace: 'article',
 	state: {
         is_load: false,
-        credit_card_list: []
+        list: []
 	},
 
 	reducers: {

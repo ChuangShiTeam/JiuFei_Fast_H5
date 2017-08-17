@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
-import { NavBar, Icon, Carousel, WhiteSpace, WingBlank, SegmentedControl, List  } from 'antd-mobile';
 import {connect} from 'dva';
+import {routerRedux} from 'dva/router';
 import {createForm} from 'rc-form';
+import {NavBar, Icon, ActivityIndicator, WhiteSpace, WingBlank, SegmentedControl, List} from 'antd-mobile';
+
+import Menu from './Menu';
 
 import http from '../util/http';
 import constant from '../util/constant';
@@ -11,14 +14,13 @@ class Index extends Component {
         super(props);
 
         this.state = {
-
+            visible: false,
+            selected: ''
         };
     }
 
     componentDidMount() {
-        if (!this.props.index.is_load) {
-            this.handleLoad();
-        }
+        this.handleLoad();
     }
 
     componentWillUnmount() {
@@ -38,11 +40,27 @@ class Index extends Component {
                 //     let product_category_id = data[this.state.selectedIndex].product_category_id;
                 //     this.handleLoadProduct(product_category_id);
                 // }
+
+                let product_category_name_list = [];
+                for (let i = 0; i < data.product_category_list.length; i++) {
+                    product_category_name_list.push(data.product_category_list[i].product_category_name);
+                }
+
+                let product_list = [];
+                for (let i = 0; i < data.product_list.length; i++) {
+                    if (data.product_list[i].product_category_id === data.product_category_list[0].product_category_id) {
+                        product_list.push(data.product_list[i]);
+                    }
+                }
+
                 this.props.dispatch({
                     type: 'index/fetch',
                     data: {
+                        is_load: true,
+                        product_category_name_list: product_category_name_list,
                         product_category_list: data.product_category_list,
-                        product_list: data.product_list
+                        product_all_list: data.product_list,
+                        product_list: product_list
                     }
                 });
             }.bind(this),
@@ -69,83 +87,113 @@ class Index extends Component {
     //     });
     // }
 
-    onChange = (e) => {
-        let selectedIndex = e.nativeEvent.selectedSegmentIndex;
-        let product_category_id = this.state.product_category_list[selectedIndex].product_category_id;
-        this.handleLoadProduct(product_category_id);
-        this.setState({
-            selectedIndex: selectedIndex
-        })
+    handleChange(event) {
+        let product_category_name_index = event.nativeEvent.selectedSegmentIndex;
+
+        let product_list = [];
+        for (let i = 0; i < this.props.index.product_all_list.length; i++) {
+            if (this.props.index.product_all_list[i].product_category_id === this.props.index.product_category_list[product_category_name_index].product_category_id) {
+                product_list.push(this.props.index.product_all_list[i]);
+            }
+        }
+
+        this.props.dispatch({
+            type: 'index/fetch',
+            data: {
+                product_category_name_index: product_category_name_index,
+                product_list: product_list
+            }
+        });
+    }
+
+    handleClick(product_link) {
+        if (product_link !== '') {
+            window.location.href = product_link;
+        }
     }
 
     render() {
-        const hProp = this.state.initialHeight ? { height: this.state.initialHeight } : {};
         const Item = List.Item;
         const Brief = Item.Brief;
 
         return (
             <div>
-                <div>
-                    <NavBar
-                            mode="light"
-                            onLeftClick={() => console.log('onLeftClick')}
-                            rightContent={[
-                                <Icon key="0" style={{color: '#0066ff'}} type="ellipsis" />,
-                             ]}
-                    >极速贷款</NavBar>
-                </div>
+                <NavBar
+                    mode="light"
+                    iconName={null}
+                    rightContent={<Menu/>}
+                >极速贷款</NavBar>
 
-                <Carousel
-                    className="my-carousel"
-                    autoplay={true}
-                    infinite
-                    selectedIndex={1}
-                    swipeSpeed={35}
-                >
-                    {/*{this.state.data.map(ii => (*/}
-                        {/*<a href="http://www.baidu.com" key={ii} style={hProp}>*/}
-                            {/*<img*/}
-                                {/*src={`https://zos.alipayobjects.com/rmsportal/${ii || 'QcWDkUhvYIVEcvtosxMF'}.png`}*/}
-                                {/*alt="icon"*/}
-                                {/*onLoad={() => {*/}
+                {/*<Carousel*/}
+                {/*className="my-carousel"*/}
+                {/*autoplay={true}*/}
+                {/*infinite*/}
+                {/*selectedIndex={1}*/}
+                {/*swipeSpeed={35}*/}
+                {/*>*/}
+                {/*{this.state.data.map(ii => (*/}
+                {/*<a href="http://www.baidu.com" key={ii} style={hProp}>*/}
+                {/*<img*/}
+                {/*src={`https://zos.alipayobjects.com/rmsportal/${ii || 'QcWDkUhvYIVEcvtosxMF'}.png`}*/}
+                {/*alt="icon"*/}
+                {/*onLoad={() => {*/}
 
-                                {/*window.dispatchEvent(new Event('resize'));*/}
-                                {/*this.setState({*/}
-                                    {/*initialHeight: null,*/}
-                                    {/*});*/}
-                                {/*}}*/}
-                            {/*/>*/}
-                        {/*</a>*/}
-                    {/*))}*/}
-                </Carousel>
+                {/*window.dispatchEvent(new Event('resize'));*/}
+                {/*this.setState({*/}
+                {/*initialHeight: null,*/}
+                {/*});*/}
+                {/*}}*/}
+                {/*/>*/}
+                {/*</a>*/}
+                {/*))}*/}
+                {/*</Carousel>*/}
 
-                <WhiteSpace size="lg" />
-                <WingBlank size="lg" className="sc-example">
-                    <SegmentedControl selectedIndex={this.state.selectedIndex}
-                                      values={this.props.product_category_name_list}
-                                      onChange={this.onChange}/>
+                <WhiteSpace size="lg"/>
+                <WingBlank size="lg">
+                    <SegmentedControl selectedIndex={this.props.index.product_category_name_index}
+                                      values={this.props.index.product_category_name_list}
+                                      onChange={this.handleChange.bind(this)}/>
+                    <WhiteSpace size="md"/>
                 </WingBlank>
                 {
-                    this.props.product_list.map(product => {
+                    this.props.index.product_list.map(item => {
                         return (
-                            <span key={product.product_id}>
-                                <WhiteSpace size="xs" />
+                            <span key={item.product_id}>
+                                <WhiteSpace size="xs"/>
                                 <List className="my-list">
                                     <Item
                                         arrow="horizontal"
-                                        thumb={constant.host + product.product_image_file.file_path}
                                         multipleLine
-                                        onClick={() => {}}
+                                        style={{height: '100px'}}
+                                        onClick={this.handleClick.bind(this, item.product_link)}
                                     >
-                                        {product.product_name}
-                                        <Brief style={{marginTop: '0px'}}>{product.product_content}</Brief>
-                                        <Brief style={{marginTop: '0px'}}>申请人数 <span style={{color: 'red'}}>{product.product_applicant_quantity}人</span></Brief>
+                                        <img src={constant.host + item.product_image} style={{
+                                            width: '65px',
+                                            height: '65px',
+                                            position: 'absolute',
+                                            top: 17,
+                                            left: 0
+                                        }} alt=""/>
+                                        <div style={{
+                                            position: 'absolute',
+                                            top: 17,
+                                            right: 30,
+                                            left: 70,
+                                        }}>
+                                        {item.product_name}
+                                            <Brief style={{marginTop: '0px'}}>{item.product_content}</Brief>
+                                        <Brief style={{marginTop: '0px'}}>申请人数 <span
+                                            style={{color: 'red'}}>{item.product_applicant_quantity}人</span></Brief>
+                                        </div>
                                     </Item>
                                 </List>
                             </span>
                         )
                     })
                 }
+                <div className={'loading-mask ' + (this.props.index.is_load ? 'loading-mask-hide' : '')}>
+                    <div className="loading"><ActivityIndicator/></div>
+                </div>
             </div>
         );
     }

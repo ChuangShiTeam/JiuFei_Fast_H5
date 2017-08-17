@@ -1,82 +1,106 @@
 import React, {Component} from 'react';
-import { NavBar, Icon, Carousel, WhiteSpace, WingBlank, SegmentedControl, RefreshControl, List, Flex} from 'antd-mobile';
+import {NavBar, Icon, List, Popover, ActivityIndicator} from 'antd-mobile';
 import {connect} from 'dva';
-import {createForm} from 'rc-form';
+import {routerRedux} from 'dva/router';
+
+import Menu from '../Menu';
 
 import http from '../../util/http';
 import constant from '../../util/constant';
 
 class CreditCardIndex extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			credit_card_list: []
-		};
-	}
+    constructor(props) {
+        super(props);
 
-	componentDidMount() {
-		this.handleLoad();
-	}
+        this.state = {};
+    }
 
-	componentWillUnmount() {
+    componentDidMount() {
+        this.handleLoad();
+    }
 
-	}
+    componentWillUnmount() {
 
-	handleLoad() {
-		http.request({
-			url: '/mobile/feijiu/fast/credit/card/list/all',
-			data: {},
-			success: function (data) {
-				if (data && data.length > 0) {
-					this.setState({
-						credit_card_list: data,
-					});
-				}
-			}.bind(this),
-			complete: function () {
+    }
 
-			}.bind(this)
-		});
-	}
+    handleLoad() {
+        http.request({
+            url: '/mobile/feijiu/fast/credit/card/list',
+            data: {},
+            success: function (data) {
+                if (data && data.length > 0) {
+                    this.setState({
+                        credit_card_list: data,
+                    });
+                }
+                this.props.dispatch({
+                    type: 'credit_card/fetch',
+                    data: {
+                        is_load: true,
+                        credit_card_list: data,
+                    }
+                });
+            }.bind(this),
+            complete: function () {
 
-	render() {
-		const Item = List.Item;
-		const Brief = Item.Brief;
-		return (
-			<div>
-				<div>
-					<NavBar
-						mode="light"
-						onLeftClick={() => console.log('onLeftClick')}
-						rightContent={[
-                                <Icon key="0" style={{color: '#0066ff'}} type="ellipsis" />,
-                             ]}
-					>信用卡办理</NavBar>
-				</div>
-				<Flex wrap="wrap">
-					{
-						this.state.credit_card_list.map(credit_card => {
-							return (
-								<List className="my-list" style={{width: '50%'}}>
-									<Item
-										arrow="horizontal"
-										thumb={constant.host + credit_card.credit_card_image_file.file_path}
-										multipleLine
-										onClick={() => {}}
-									>
-										{credit_card.credit_card_name}
-										<Brief style={{marginTop: '0px'}}>{credit_card.credit_card_content}</Brief>
-									</Item>
-								</List>
-							)
-						})
-					}
-				</Flex>
-			</div>
-		);
-	}
+            }.bind(this)
+        });
+    }
+
+    handleBack() {
+        this.props.dispatch(routerRedux.goBack());
+    }
+
+    handleClick(credit_card_link) {
+        if (credit_card_link !== '') {
+            window.location.href = credit_card_link;
+        }
+    }
+
+    render() {
+        const Item = List.Item;
+
+        return (
+            <div>
+                <NavBar
+                    mode="light"
+                    onLeftClick={this.handleBack.bind(this)}
+                    rightContent={<Menu/>}
+                >信用卡办理</NavBar>
+                <div style={{borderBottom: '1px solid #ddd', backgroundColor: '#ffffff'}}>
+                    {
+                        this.props.credit_card.credit_card_list.map((item, index) => {
+                            return (
+                                <div key={item.credit_card_id}
+                                     className={'credit_cart_item ' + (index % 2 === 0 ? '' : 'credit_cart_item_right')}
+                                     onClick={this.handleClick.bind(this, item.credit_card_link)}>
+                                    <img src={constant.host + item.credit_card_image} style={{
+                                        width: '40px',
+                                        height: '40px',
+                                        position: 'absolute',
+                                        top: 15,
+                                        left: 15
+                                    }} alt=""/>
+                                    <div style={{position: 'absolute', top: 16, left: 65}}>{item.credit_card_name}</div>
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: 40,
+                                        left: 65,
+                                        fontSize: '12px',
+                                        color: '#8d8d8d'
+                                    }}>{item.credit_card_content}</div>
+                                </div>
+                            )
+                        })
+                    }
+                    <div className="clear"></div>
+                </div>
+                <div className={'loading-mask ' + (this.props.credit_card.is_load ? 'loading-mask-hide' : '')}>
+                    <div className="loading"><ActivityIndicator/></div>
+                </div>
+            </div>
+        );
+    }
 }
-
-CreditCardIndex = createForm()(CreditCardIndex);
 
 export default connect(({credit_card}) => ({credit_card}))(CreditCardIndex);
