@@ -8,7 +8,10 @@ class Menu extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {}
+        this.state = {
+            visible: false,
+            selected: '',
+        }
     }
 
     componentDidMount() {
@@ -69,18 +72,20 @@ class Menu extends Component {
                      overlay={[
                          (<Item key="1" value="scan"
                                 onClick={this.handleClickIndex.bind(this)}
-                             // icon={<Icon type={require('../../image/settings.svg')} size="xs"/>}
+                                icon={<Icon type={require('../image/home.png')} />}
                                 data-seed="logId">我要申请</Item>),
                          (<Item key="2" value="special"
                                 onClick={this.handleClickCreditCart.bind(this)}
-                             // icon={<Icon type={require('../../image/settings.svg')} size="xs"/>}
+                                icon={<Icon type={require('../image/home.png')} />}
                                 style={{whiteSpace: 'nowrap'}}>申请信用卡</Item>),
                          (<Item key="3" value="button ct"
+                                icon={<Icon type={require('../image/home.png')} />}
                                 onClick={this.handleClickArticle.bind(this)}
                          >
                              <span style={{marginRight: 5}}>贷款攻略</span>
                          </Item>),
                          (<Item key="4" value="button ct"
+                                icon={<Icon type={require('../image/home.png')} />}
                                 onClick={this.handleClickAbout.bind(this)}
                          >
                              <span style={{marginRight: 5}}>关于我们</span>

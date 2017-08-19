@@ -2,7 +2,7 @@ export default {
 	namespace: 'about',
 	state: {
         is_load: false,
-        list: []
+        about: {}
 	},
 
 	reducers: {

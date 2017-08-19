@@ -4,7 +4,6 @@ import {routerRedux} from 'dva/router';
 import {NavBar, List, ActivityIndicator} from 'antd-mobile';
 
 import Menu from '../Menu';
-
 import http from '../../util/http';
 import constant from '../../util/constant';
 
