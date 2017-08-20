@@ -131,7 +131,7 @@ class Apply extends Component {
                             Toast.hide();
 
                             this.props.dispatch(routerRedux.push({
-                                pathname: '/sucess',
+                                pathname: '/index',
                                 query: {},
                             }));
                         }.bind(this),

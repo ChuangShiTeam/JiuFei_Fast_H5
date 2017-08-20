@@ -5,18 +5,20 @@ import {Popup, List, InputItem, DatePicker, Checkbox, WhiteSpace, Button, Toast}
 import {createForm} from 'rc-form';
 import moment from 'moment';
 
+import http from '../util/http';
+
 class Home extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-
+            is_send: false,
+            count: 60
         };
     }
 
 
     componentDidMount() {
-
         this.props.form.setFieldsValue({
             customer_name: this.props.customer.customer_name,
             customer_phone: this.props.customer.customer_phone,
@@ -24,7 +26,7 @@ class Home extends Component {
             customer_birthday: this.props.customer.customer_birthday,
             customer_city: this.props.customer.customer_city
         });
-        // Popup.show(<div className="code-info"><img className="close" onClick={this.handleClose.bind(this)} src={require('../image/04.png')} alt=''/> <img className="code-img" style={{width: '80%'}} src={require('../image/03.jpg')} alt='微店二维码' /></div>, {maskClosable:false, className: 'back'});
+
         Popup.show(<div className="code-info"><img className="code-img" style={{width: '80%'}} src={require('../image/03.jpg')} alt='微店二维码' /></div>, {maskClosable:true, className: 'back'});
     }
 
@@ -47,56 +49,71 @@ class Home extends Component {
     handleNext() {
         this.props.form.validateFields((errors, values) => {
             if (values.customer_name === '') {
-                Toast.fail('请输入中文姓名', 1)
+                Toast.fail('请输入中文姓名', 1);
                 return;
             }
 
             if (values.customer_phone === '') {
-                Toast.fail('请输入手机号码', 1)
+                Toast.fail('请输入手机号码', 1);
                 return;
             } else {
                 if (!this.checkPhone(values.customer_phone)) {
-                    Toast.fail('手机号码格式不对', 1)
+                    Toast.fail('手机号码格式不对', 1);
                     return;
                 }
             }
 
             if (values.customer_validate === '') {
-                Toast.fail('请选择您的手机验证码', 1)
+                Toast.fail('请选择您的手机验证码', 1);
                 return;
             }
 
             if (values.customer_birthday === '') {
-                Toast.fail('请选择您的出生日期', 1)
+                Toast.fail('请选择您的出生日期', 1);
                 return;
             }
 
             if (values.customer_city === '') {
-                Toast.fail('请输入所在城市', 1)
+                Toast.fail('请输入所在城市', 1);
                 return;
             }
 
             if (values.customer_sex === '') {
-                Toast.fail('请选择您的性别', 1)
+                Toast.fail('请选择您的性别', 1);
                 return;
             }
 
             if (!errors) {
-                this.props.dispatch({
-                    type: 'customer/fetch',
-                    data: {
-                        customer_name: values.customer_name,
-                        customer_phone: values.customer_phone,
-                        customer_birthday: values.customer_birthday,
-                        customer_city: values.customer_city
-                    }
-                });
+                Toast.loading('加载中..', 0);
 
-                this.props.dispatch(routerRedux.push({
-                    pathname: '/apply',
-                    query: {},
-                }));
-                return
+                http.request({
+                    url: '/mobile/feijiu/fast/captcha/check',
+                    data: {
+                        captcha_mobile: values.customer_phone,
+                        captcha_code: values.captcha_code
+                    },
+                    success: function (data) {
+                        Toast.hide();
+
+                        this.props.dispatch({
+                            type: 'customer/fetch',
+                            data: {
+                                customer_name: values.customer_name,
+                                customer_phone: values.customer_phone,
+                                customer_birthday: values.customer_birthday,
+                                customer_city: values.customer_city
+                            }
+                        });
+
+                        this.props.dispatch(routerRedux.push({
+                            pathname: '/apply',
+                            query: {},
+                        }));
+                    }.bind(this),
+                    complete: function () {
+
+                    }.bind(this)
+                });
             }
         });
     }
@@ -111,6 +128,51 @@ class Home extends Component {
             data: {
                 customer_sex: customer_sex
             }
+        });
+    }
+
+    handleCaptcha() {
+        let customer_phone = this.props.form.getFieldValue('customer_phone');
+
+        if (customer_phone === '') {
+            Toast.fail('请输入手机号码', 1);
+            return;
+        } else {
+            if (!this.checkPhone(customer_phone)) {
+                Toast.fail('手机号码格式不对', 1);
+                return;
+            }
+        }
+
+        Toast.loading('加载中..', 0);
+
+        http.request({
+            url: '/mobile/feijiu/fast/captcha/send',
+            data: {
+                captcha_mobile: customer_phone
+            },
+            success: function (data) {
+                Toast.hide();
+
+                this.setState({
+                    is_send: true,
+                    count: 60
+                });
+
+                setTimeout(function () {
+                    this.handleCount();
+                }.bind(this), 60000);
+            }.bind(this),
+            complete: function () {
+
+            }.bind(this)
+        });
+    }
+
+    handleCount() {
+        this.setState({
+            is_send: false,
+            count: 60
         });
     }
 
@@ -147,19 +209,27 @@ class Home extends Component {
                         error={!!getFieldError('customer_phone')}
                         clear
                         placeholder="请输入手机号码"
-                    >您的手机</InputItem>
+                    >
+                        您的手机
+                        {
+                            this.state.is_send ?
+                                <Button style={{ position: 'absolute',top:'0.12rem',right:'6px' }} size="small" disabled={true}>一分钟后再尝试</Button>
+                                :
+                                <Button type="primary" style={{ position: 'absolute',top:'0.12rem',right:'6px' }} size="small" onClick={this.handleCaptcha.bind(this)}>获取验证码</Button>
+                        }
+                    </InputItem>
                     <InputItem
-                        {...getFieldProps('customer_validate', {
+                        {...getFieldProps('captcha_code', {
                             rules: [{
                                 required: true,
                                 message: '不能为空',
                             }],
                             initialValue: '',
                         })}
-                        error={!!getFieldError('customer_validate')}
+                        error={!!getFieldError('captcha_code')}
                         clear
                         placeholder="手机验证码"
-                    >验证码<Button type="primary" style={{ position: 'absolute',top:'0.12rem',right:'6px' }} size="small">获取验证码</Button></InputItem>
+                    >验证码</InputItem>
 
                     <DatePicker
                         mode="date"

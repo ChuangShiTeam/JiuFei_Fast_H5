@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'dva';
 import {routerRedux} from 'dva/router';
-import {Popover, Icon, List} from 'antd-mobile';
+import {Popover, Icon} from 'antd-mobile';
 
 class Menu extends Component {
     constructor(props) {
@@ -22,30 +22,9 @@ class Menu extends Component {
 
     }
 
-    handleClickIndex() {
+    handleSelect(option) {
         this.props.dispatch(routerRedux.push({
-            pathname: '/index',
-            query: {}
-        }));
-    }
-
-    handleClickCreditCart() {
-        this.props.dispatch(routerRedux.push({
-            pathname: '/credit/card/index',
-            query: {}
-        }));
-    }
-
-    handleClickArticle() {
-        this.props.dispatch(routerRedux.push({
-            pathname: '/article/index',
-            query: {}
-        }));
-    }
-
-    handleClickAbout() {
-        this.props.dispatch(routerRedux.push({
-            pathname: '/about',
+            pathname: option.props.value,
             query: {}
         }));
     }
@@ -57,7 +36,7 @@ class Menu extends Component {
     };
 
     render() {
-        const Item = List.Item;
+        const Item = Popover.Item;
 
         let offsetX = -10; // just for pc demo
         if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
@@ -70,23 +49,19 @@ class Menu extends Component {
                      overlayStyle={{color: 'currentColor'}}
                      visible={this.state.visible}
                      overlay={[
-                         (<Item key="1" value="scan"
-                                onClick={this.handleClickIndex.bind(this)}
-                                icon={<Icon type={require('../image/home.png')} />}
+                         (<Item key="1" value="/index"
+                                icon={<img src={require('../image/home.png')} style={{width: '20px'}} alt=""/>}
                                 data-seed="logId">我要申请</Item>),
-                         (<Item key="2" value="special"
-                                onClick={this.handleClickCreditCart.bind(this)}
-                                icon={<Icon type={require('../image/home.png')} />}
+                         (<Item key="2" value="/credit/card/index"
+                                icon={<img src={require('../image/recharge.png')} style={{width: '20px'}} alt=""/>}
                                 style={{whiteSpace: 'nowrap'}}>申请信用卡</Item>),
-                         (<Item key="3" value="button ct"
-                                icon={<Icon type={require('../image/home.png')} />}
-                                onClick={this.handleClickArticle.bind(this)}
+                         (<Item key="3" value="/article/index"
+                                icon={<img src={require('../image/upstage.png')} style={{width: '20px'}} alt=""/>}
                          >
                              <span style={{marginRight: 5}}>贷款攻略</span>
                          </Item>),
-                         (<Item key="4" value="button ct"
-                                icon={<Icon type={require('../image/home.png')} />}
-                                onClick={this.handleClickAbout.bind(this)}
+                         (<Item key="4" value="/about"
+                                icon={<img src={require('../image/friend.png')} style={{width: '20px'}} alt=""/>}
                          >
                              <span style={{marginRight: 5}}>关于我们</span>
                          </Item>),
@@ -95,6 +70,7 @@ class Menu extends Component {
                          overflow: {adjustY: 0, adjustX: 0},
                          offset: [offsetX, 15],
                      }}
+                     onSelect={this.handleSelect.bind(this)}
                      onVisibleChange={this.handlePopoverChange.bind(this)}
             >
                 <div style={{
