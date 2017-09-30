@@ -27,8 +27,8 @@ class Home extends Component {
             customer_city: this.props.customer.customer_city
         });
 
-        Popup.show(<div className="code-info"><img className="code-img" style={{width: '80%'}} src={require('../image/03.jpg')} alt='微店二维码' /></div>, {maskClosable:true, className: 'back'});
-    }
+        /*Popup.show(<div className="code-info"><img className="code-img" style={{width: '80%'}} src={require('../image/03.jpg')} alt='微店二维码' /></div>, {maskClosable:true, className: 'back'});
+*/    }
 
     componentWillUnmount() {
 
