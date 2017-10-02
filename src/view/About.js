@@ -5,6 +5,7 @@ import {NavBar, ActivityIndicator} from 'antd-mobile';
 
 import Menu from './Menu';
 import http from '../util/http';
+import validate from '../util/validate';
 
 class About extends Component {
     constructor(props) {
@@ -30,6 +31,8 @@ class About extends Component {
                 page_id: 'a68e360c5d31413ab80a10e39c1973ff'
             },
             success: function (data) {
+                data.page_content = validate.unescapeHtml(data.page_content);
+
                 this.props.dispatch({
                     type: 'about/fetch',
                     data: {

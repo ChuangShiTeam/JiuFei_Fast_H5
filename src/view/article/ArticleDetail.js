@@ -6,6 +6,7 @@ import {NavBar, ActivityIndicator} from 'antd-mobile';
 import Menu from '../Menu';
 
 import http from '../../util/http';
+import validate from '../../util/validate';
 
 class ArticleDetail extends Component {
     constructor(props) {
@@ -35,6 +36,8 @@ class ArticleDetail extends Component {
             },
             success: function (data) {
                 document.title = data.article_name;
+
+                data.article_content = validate.unescapeHtml(data.article_content);
 
                 this.setState({
                     is_load: true,
